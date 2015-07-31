@@ -78,17 +78,39 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 {
     _isInitialState = YES;
     _isValidState = NO;
+    
+    if ( !self.font )
+        self.font = DefaultBoldFont;
+    
+    if ( self.cardWidth <= 0.0 )
+        self.cardWidth = 170.0;
+    
+    if ( self.expiryWidth <= 0.0 )
+        self.expiryWidth = 60.0;
+    
+    if ( self.cvcWidth <= 0.0 )
+        self.cvcWidth = 55.0;
+    
+    if ( self.zipWidth <= 0.0 )
+        self.zipWidth = 70.0;
 
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, 290, 46);
-    self.backgroundColor = [UIColor clearColor];
+    if ( self.backgroundImage )
+    {
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, 290, 46);
+        self.backgroundColor = [UIColor clearColor];
 
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.bounds];
-    backgroundImageView.image = [[UIImage imageNamed:@"textfield"]
-            resizableImageWithCapInsets:UIEdgeInsetsMake(0, 8, 0, 8)];
-    [self addSubview:backgroundImageView];
+        if ( self.backgroundImage )
+        {
+            UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+            backgroundImageView.image = self.backgroundImage; // [[UIImage imageNamed:@"textfield"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 8, 0, 8)];
+            [self addSubview:backgroundImageView];
+        }
+    }
 
-    self.innerView = [[UIView alloc] initWithFrame:CGRectMake(40, 12, self.frame.size.width - 40, 20)];
+    self.innerView = [[UIView alloc] initWithFrame:CGRectMake(40, 12, self.frame.size.width - 40, self.frame.size.height - 24.0)];
     self.innerView.clipsToBounds = YES;
+    
+    [self resizeView];
 
     [self setupPlaceholderView];
     [self setupCardNumberField];
@@ -101,7 +123,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     gradientImageView.image = [UIImage imageNamed:@"gradient"];
     [self.innerView addSubview:gradientImageView];
 
-    self.opaqueOverGradientView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 9, 34)];
+    self.opaqueOverGradientView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 18, self.innerView.frame.size.height)];
     self.opaqueOverGradientView.backgroundColor = [UIColor colorWithRed:0.9686 green:0.9686
                                                                    blue:0.9686 alpha:1.0000];
     self.opaqueOverGradientView.alpha = 0.0;
@@ -111,6 +133,8 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     [self addSubview:self.placeholderView];
 
     [self stateCardNumber];
+    
+    //[self setupFrameDebug];
 }
 
 
@@ -126,40 +150,111 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     [self.placeholderView.layer addSublayer:clip];
 }
 
+- (void) setFrameForOffset:(CGFloat)offset forField:(PTKTextField*)textField
+{
+    CGRect iFrame = self.innerView.bounds;
+    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + offset;
+    
+    iFrame = CGRectMake( hoffset, 0, self.cardWidth,  self.bounds.size.height );
+    
+    [textField setFrame: iFrame];
+}
+
 - (void)setupCardNumberField
 {
-    self.cardNumberField = [[PTKTextField alloc] initWithFrame:CGRectMake(12, 0, 170, 20)];
+    CGRect iFrame = self.innerView.bounds;
+    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + 2.0;
+    
+    iFrame = CGRectMake( hoffset, 0, self.cardWidth,  self.bounds.size.height );
+    self.cardNumberField = [[PTKTextField alloc] initWithFrame: iFrame];
     self.cardNumberField.delegate = self;
     self.cardNumberField.placeholder = [self.class localizedStringWithKey:@"placeholder.card_number" defaultValue:@"1234 5678 9012 3456"];
     self.cardNumberField.keyboardType = UIKeyboardTypeNumberPad;
     self.cardNumberField.textColor = DarkGreyColor;
-    self.cardNumberField.font = DefaultBoldFont;
+    self.cardNumberField.font = self.font;
 
     [self.cardNumberField.layer setMasksToBounds:YES];
 }
 
 - (void)setupCardExpiryField
 {
-    self.cardExpiryField = [[PTKTextField alloc] initWithFrame:CGRectMake(kPTKViewCardExpiryFieldStartX, 0, 60, 20)];
+    CGRect iFrame = self.innerView.bounds;
+    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + kPTKViewCardExpiryFieldStartX;
+    
+    iFrame = CGRectMake( hoffset, 0, self.expiryWidth,  self.bounds.size.height );
+    self.cardExpiryField = [[PTKTextField alloc] initWithFrame: iFrame];
     self.cardExpiryField.delegate = self;
     self.cardExpiryField.placeholder = [self.class localizedStringWithKey:@"placeholder.card_expiry" defaultValue:@"MM/YY"];
     self.cardExpiryField.keyboardType = UIKeyboardTypeNumberPad;
     self.cardExpiryField.textColor = DarkGreyColor;
-    self.cardExpiryField.font = DefaultBoldFont;
+    self.cardExpiryField.font = self.font;
 
     [self.cardExpiryField.layer setMasksToBounds:YES];
 }
 
 - (void)setupCardCVCField
 {
-    self.cardCVCField = [[PTKTextField alloc] initWithFrame:CGRectMake(kPTKViewCardCVCFieldStartX, 0, 55, 20)];
+    CGRect iFrame = self.innerView.bounds;
+    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + kPTKViewCardCVCFieldStartX;
+    
+    iFrame = CGRectMake( hoffset, 0, self.cvcWidth,  self.bounds.size.height );
+    self.cardCVCField = [[PTKTextField alloc] initWithFrame: iFrame];
     self.cardCVCField.delegate = self;
     self.cardCVCField.placeholder = [self.class localizedStringWithKey:@"placeholder.card_cvc" defaultValue:@"CVC"];
     self.cardCVCField.keyboardType = UIKeyboardTypeNumberPad;
     self.cardCVCField.textColor = DarkGreyColor;
-    self.cardCVCField.font = DefaultBoldFont;
+    self.cardCVCField.font = self.font;
 
     [self.cardCVCField.layer setMasksToBounds:YES];
+}
+
+- (void) layoutSubviews
+{
+    [super layoutSubviews];
+    
+    [self resizeView];
+}
+
+- (void) setupFrameDebug
+{
+    [[self layer] setBorderWidth: 0.5];
+    [[self layer] setBorderColor: [UIColor blueColor].CGColor];
+    [[[self innerView] layer] setBorderWidth: 0.5];
+    [[[self innerView] layer] setBorderColor: [UIColor magentaColor].CGColor];
+    [[[self clipView] layer] setBorderWidth: 0.5];
+    [[[self clipView] layer] setBorderColor: [UIColor yellowColor].CGColor];
+    [[[self placeholderView] layer] setBorderWidth: 0.5];
+    [[[self placeholderView] layer] setBorderColor: [UIColor greenColor].CGColor];
+}
+
+- (void) resizeView
+{
+    CGRect iframe = [self bounds];
+    CGRect placeHolderFrame = [[self placeholderView] frame];
+    CGFloat heightPadding = ( iframe.size.height - placeHolderFrame.size.height ) / 2.0;
+    
+    [self.clipView setFrame: iframe];
+    
+    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + placeHolderFrame.size.width + 10,
+                         iframe.origin.y + self.edgeInsets.top,
+                         iframe.size.width - (self.edgeInsets.left + self.edgeInsets.right+ placeHolderFrame.size.width + 10),
+                        iframe.size.height - (self.edgeInsets.top + self.edgeInsets.bottom));
+    
+//    NSLog( @"innerView before: %@ changing to %@", NSStringFromCGRect( [[self innerView] frame] ),
+//          NSStringFromCGRect( iframe ) );
+    
+    [self.innerView setFrame: iframe];
+    
+    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + 12, // note the orifinal had a 2 pixel overlap - so maintaining it
+                        iframe.origin.y + self.edgeInsets.top + heightPadding,
+                        placeHolderFrame.size.width,
+                        placeHolderFrame.size.height );
+    
+    [self.placeholderView setFrame: iframe];
+    
+    [self setFrameForOffset: 7.0 forField: self.cardNumberField];
+    [self setFrameForOffset: kPTKViewCardExpiryFieldStartX forField: self.cardExpiryField];
+    [self setFrameForOffset: kPTKViewCardCVCFieldStartX forField: self.cardCVCField];
 }
 
 // Checks both the old and new localization table (we switched in 3/14 to PaymentKit.strings).
@@ -203,6 +298,8 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     if (!_isInitialState) {
         // Animate left
         _isInitialState = YES;
+        
+        CGRect pframe = [self.placeholderView frame];
 
         [UIView animateWithDuration:0.05 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
@@ -221,7 +318,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                                      self.cardCVCField.frame.origin.y,
                                      self.cardCVCField.frame.size.width,
                                      self.cardCVCField.frame.size.height);
-                             self.cardNumberField.frame = CGRectMake(12,
+                             self.cardNumberField.frame = CGRectMake( pframe.origin.x + pframe.size.width,
                                      self.cardNumberField.frame.origin.y,
                                      self.cardNumberField.frame.size.width,
                                      self.cardNumberField.frame.size.height);
@@ -243,16 +340,16 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     if ([self.cardNumber.formattedString respondsToSelector:@selector(sizeWithAttributes:)]) {
-        NSDictionary *attributes = @{NSFontAttributeName: DefaultBoldFont};
+        NSDictionary *attributes = @{NSFontAttributeName: self.font};
 
         cardNumberSize = [self.cardNumber.formattedString sizeWithAttributes:attributes];
         lastGroupSize = [self.cardNumber.lastGroup sizeWithAttributes:attributes];
     } else {
-        cardNumberSize = [self.cardNumber.formattedString sizeWithFont:DefaultBoldFont];
-        lastGroupSize = [self.cardNumber.lastGroup sizeWithFont:DefaultBoldFont];
+        cardNumberSize = [self.cardNumber.formattedString sizeWithFont:self.font];
+        lastGroupSize = [self.cardNumber.lastGroup sizeWithFont:self.font];
     }
 #else
-    NSDictionary *attributes = @{NSFontAttributeName: DefaultBoldFont};
+    NSDictionary *attributes = @{NSFontAttributeName: self.font};
 
     cardNumberSize = [self.cardNumber.formattedString sizeWithAttributes:attributes];
     lastGroupSize = [self.cardNumber.lastGroup sizeWithAttributes:attributes];

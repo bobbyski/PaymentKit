@@ -32,12 +32,6 @@
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(save:)];
     saveButton.enabled = NO;
     self.navigationItem.rightBarButtonItem = saveButton;
-    
-    self.paymentView = [[PTKView alloc] initWithFrame:CGRectMake(15, 25, 290, 45)];
-    self.paymentView.delegate = self;
-    
-    [self.view addSubview:self.paymentView];
-    [self.paymentView becomeFirstResponder];
 }
 
 
@@ -60,8 +54,10 @@
     NSLog(@"Card expiry: %lu/%lu", (unsigned long)card.expMonth, (unsigned long)card.expYear);
     NSLog(@"Card cvc: %@", card.cvc);
     
-    [[NSUserDefaults standardUserDefaults] setValue:card.last4 forKey:@"card.last4"];
-    [self.navigationController popViewControllerAnimated:YES];
+    [[NSUserDefaults standardUserDefaults] setValue: card.last4 forKey: @"card.last4"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self.navigationController popViewControllerAnimated: YES];
 }
 
 @end

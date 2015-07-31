@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1280" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7706"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PaymentViewController">
             <connections>
+                <outlet property="paymentView" destination="aXm-5D-SyK" id="Rgg-fl-5bJ"/>
                 <outlet property="view" destination="6" id="7"/>
             </connections>
         </placeholder>
@@ -14,9 +15,29 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="6">
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aXm-5D-SyK" customClass="PTKView">
+                    <rect key="frame" x="0.0" y="57" width="320" height="45"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="45" id="N8V-uS-1jg"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="erz-Lu-wSE"/>
+                    </connections>
+                </view>
+            </subviews>
             <color key="backgroundColor" red="0.90196084980000002" green="0.90980398650000005" blue="0.9215686917" alpha="1" colorSpace="deviceRGB"/>
-            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="aXm-5D-SyK" secondAttribute="trailing" id="J0r-vD-NSA"/>
+                <constraint firstItem="aXm-5D-SyK" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="JvR-Z6-tbi"/>
+                <constraint firstItem="aXm-5D-SyK" firstAttribute="top" secondItem="6" secondAttribute="top" constant="57" id="mn0-OB-HWw"/>
+            </constraints>
         </view>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

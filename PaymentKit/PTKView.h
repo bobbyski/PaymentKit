@@ -21,6 +21,7 @@
 - (void)paymentView:(PTKView *)paymentView withCard:(PTKCard *)card isValid:(BOOL)valid;
 @end
 
+IB_DESIGNABLE
 @interface PTKView : UIView
 
 - (BOOL)isValid;
@@ -30,6 +31,13 @@
 @property (nonatomic, readonly) PTKCardExpiry *cardExpiry;
 @property (nonatomic, readonly) PTKCardCVC *cardCVC;
 @property (nonatomic, readonly) PTKAddressZip *addressZip;
+@property (nonatomic, assign) IBInspectable UIEdgeInsets edgeInsets;
+@property (nonatomic, strong) IBInspectable UIFont* font;
+@property (nonatomic, strong) IBInspectable UIImage* backgroundImage;
+@property (nonatomic, assign) IBInspectable CGFloat cardWidth;
+@property (nonatomic, assign) IBInspectable CGFloat expiryWidth;
+@property (nonatomic, assign) IBInspectable CGFloat cvcWidth;
+@property (nonatomic, assign) IBInspectable CGFloat zipWidth;
 
 @property IBOutlet UIView *innerView;
 @property IBOutlet UIView *clipView;
@@ -37,7 +45,7 @@
 @property IBOutlet PTKTextField *cardExpiryField;
 @property IBOutlet PTKTextField *cardCVCField;
 @property IBOutlet UIImageView *placeholderView;
-@property (nonatomic, weak) id <PTKViewDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id <PTKViewDelegate> delegate;
 @property (readonly) PTKCard *card;
 
 @end

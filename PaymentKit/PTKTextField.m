@@ -39,6 +39,12 @@
 
 }
 
+- (void) setFrame:(CGRect)frame
+{
+    [super setFrame: frame];
+    NSLog( @"card frame set to %@", NSStringFromCGRect( frame));
+}
+
 - (void)drawRect:(CGRect)rect
 {
     if (self.text.length == 0 || [self.text isEqualToString:kPTKTextFieldSpaceChar]) {

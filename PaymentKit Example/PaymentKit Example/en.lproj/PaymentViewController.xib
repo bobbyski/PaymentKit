@@ -36,15 +36,9 @@
                         <userDefinedRuntimeAttribute type="color" keyPath="badColor">
                             <color key="value" red="0.74509803919999995" green="0.1176470588" blue="0.1764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="spacing">
-                            <real key="value" value="32"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="DBLCDTempBlack"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="HelveticaNeue"/>
                         <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                             <real key="value" value="16"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cardWidth">
-                            <real key="value" value="200"/>
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                     <connections>

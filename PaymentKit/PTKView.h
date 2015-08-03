@@ -41,6 +41,7 @@ IB_DESIGNABLE
 @property (nonatomic, assign) IBInspectable CGFloat cvcWidth;
 @property (nonatomic, assign) IBInspectable CGFloat zipWidth;
 @property (nonatomic, assign) IBInspectable CGFloat spacing;
+@property (nonatomic, assign) IBInspectable CGFloat placeHolderSpacing;
 @property (nonatomic, strong) IBInspectable UIColor* textColor;
 @property (nonatomic, strong) IBInspectable UIColor* placeholderColor;
 @property (nonatomic, strong) IBInspectable UIColor* goodColor;

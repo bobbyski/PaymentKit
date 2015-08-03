@@ -8,6 +8,7 @@
 
 #import "PTKView.h"
 #import "PTKTextField.h"
+#import "UIView+debuggingTools.h"
 
 #define RGB(r,g,b) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f]
 #define DarkGreyColor RGB(0,0,0)
@@ -15,12 +16,6 @@
 #define DefaultBoldFont [UIFont boldSystemFontOfSize:17]
 
 #define kPTKViewPlaceholderViewAnimationDuration 0.25
-
-#define kPTKViewCardExpiryFieldStartX 84 + 200
-#define kPTKViewCardCVCFieldStartX 177 + 200
-
-#define kPTKViewCardExpiryFieldEndX 84
-#define kPTKViewCardCVCFieldEndX 177
 
 static NSString *const kPTKLocalizedStringsTableName = @"PaymentKit";
 static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable";
@@ -90,19 +85,31 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
         self.font = DefaultBoldFont;
     
     if ( self.cardWidth <= 0.0 )
-        self.cardWidth = 170.0;
+    {
+        CGSize size = [@"9999 9999 9999 9999" sizeWithAttributes: @{NSFontAttributeName: self.font}];
+        self.cardWidth = size.width;
+    }
     
     if ( self.expiryWidth <= 0.0 )
-        self.expiryWidth = 60.0;
+    {
+        CGSize size = [@"MM/YY" sizeWithAttributes: @{NSFontAttributeName: self.font}];
+        self.expiryWidth = size.width;
+    }
     
     if ( self.cvcWidth <= 0.0 )
-        self.cvcWidth = 55.0;
+    {
+        CGSize size = [@"CVC9" sizeWithAttributes: @{NSFontAttributeName: self.font}];
+        self.cvcWidth = size.width;
+    }
     
     if ( self.zipWidth <= 0.0 )
         self.zipWidth = 70.0;
     
     if ( self.spacing <= 0.0 )
-        self.spacing = 2.0;
+        self.spacing = 10.0;
+    
+    if ( self.placeHolderSpacing <= 0.0 )
+        self.placeHolderSpacing = 5.0;
     
     if ( !self.textColor )
         self.textColor = [UIColor blackColor];
@@ -156,7 +163,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
     [self stateCardNumber];
     
-    [self setupFrameDebug];
+    //[self setupFrameDebug];
 }
 
 
@@ -175,7 +182,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 - (void) setFrameForSize:(CGFloat)width offset:(CGFloat)offset forField:(PTKTextField*)textField
 {
     CGRect iFrame = self.innerView.bounds;
-    CGFloat hoffset = self.placeholderView.frame.size.width + offset;
+    CGFloat hoffset = /* self.placeholderView.frame.size.width + */ offset;
     
     iFrame = CGRectMake( hoffset, 0, width,  self.bounds.size.height );
     
@@ -201,7 +208,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 - (void)setupCardExpiryField
 {
     CGRect iFrame = self.innerView.bounds;
-    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + kPTKViewCardExpiryFieldStartX;
+    CGFloat hoffset = self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing;
     
     iFrame = CGRectMake( hoffset, 0, self.expiryWidth,  self.bounds.size.height );
     self.cardExpiryField = [[PTKTextField alloc] initWithFrame: iFrame];
@@ -217,7 +224,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 - (void)setupCardCVCField
 {
     CGRect iFrame = self.innerView.bounds;
-    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + kPTKViewCardCVCFieldStartX;
+    CGFloat hoffset = self.cardExpiryField.frame.origin.x + self.cardExpiryField.frame.size.width + self.spacing;
     
     iFrame = CGRectMake( hoffset, 0, self.cvcWidth,  self.bounds.size.height );
     self.cardCVCField = [[PTKTextField alloc] initWithFrame: iFrame];
@@ -274,9 +281,17 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     
     [self.placeholderView setFrame: iframe];
     
-    [self setFrameForSize: self.cardWidth offset: self.spacing forField: self.cardNumberField];
-    [self setFrameForSize: self.expiryWidth offset: kPTKViewCardExpiryFieldStartX forField: self.cardExpiryField];
-    [self setFrameForSize: self.cvcWidth offset: kPTKViewCardCVCFieldStartX forField: self.cardCVCField];
+    [self setFrameForSize: self.cardWidth offset: self.placeholderView.frame.size.width + self.placeHolderSpacing forField: self.cardNumberField];
+    
+    [self setFrameForSize: self.expiryWidth
+                   offset: self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing
+                 forField: self.cardExpiryField];
+    
+    [self setFrameForSize: self.cvcWidth
+                   offset: self.cardExpiryField.frame.origin.x + self.cardExpiryField.frame.size.width + self.spacing
+                 forField: self.cardCVCField];
+    
+    NSLog( @"resizeView View layout:\n%@", [self viewStructure] );
 }
 
 // Checks both the old and new localization table (we switched in 3/14 to PaymentKit.strings).
@@ -332,22 +347,26 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                               delay:0
                             options:(UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction)
                          animations:^{
-                             self.cardExpiryField.frame = CGRectMake(kPTKViewCardExpiryFieldStartX,
-                                     self.cardExpiryField.frame.origin.y,
-                                     self.cardExpiryField.frame.size.width,
-                                     self.cardExpiryField.frame.size.height);
-                             self.cardCVCField.frame = CGRectMake(kPTKViewCardCVCFieldStartX,
-                                     self.cardCVCField.frame.origin.y,
-                                     self.cardCVCField.frame.size.width,
-                                     self.cardCVCField.frame.size.height);
                              self.cardNumberField.frame = CGRectMake( pframe.origin.x + pframe.size.width,
-                                     self.cardNumberField.frame.origin.y,
-                                     self.cardNumberField.frame.size.width,
-                                     self.cardNumberField.frame.size.height);
+                                                                     self.cardNumberField.frame.origin.y,
+                                                                     self.cardNumberField.frame.size.width,
+                                                                     self.cardNumberField.frame.size.height);
+                             
+                             self.cardExpiryField.frame = CGRectMake(self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing,
+                                                                     self.cardExpiryField.frame.origin.y,
+                                                                     self.cardExpiryField.frame.size.width,
+                                                                     self.cardExpiryField.frame.size.height);
+                             
+                             self.cardCVCField.frame = CGRectMake(self.cardExpiryField.frame.origin.x + self.cardExpiryField.frame.size.width + self.spacing,
+                                                                  self.cardCVCField.frame.origin.y,
+                                                                  self.cardCVCField.frame.size.width,
+                                                                  self.cardCVCField.frame.size.height);
                          }
                          completion:^(BOOL completed) {
                              [self.cardExpiryField removeFromSuperview];
                              [self.cardCVCField removeFromSuperview];
+                             
+                             NSLog( @"animation View layout:\n%@", [self viewStructure] );
                          }];
         [self.cardNumberField becomeFirstResponder];
     }
@@ -385,24 +404,29 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                      } completion:^(BOOL finished) {
     }];
     [UIView animateWithDuration:0.400 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.cardExpiryField.frame = CGRectMake(kPTKViewCardExpiryFieldEndX,
-                self.cardExpiryField.frame.origin.y,
-                self.cardExpiryField.frame.size.width,
-                self.cardExpiryField.frame.size.height);
-        self.cardCVCField.frame = CGRectMake(kPTKViewCardCVCFieldEndX,
-                self.cardCVCField.frame.origin.y,
-                self.cardCVCField.frame.size.width,
-                self.cardCVCField.frame.size.height);
+        
         self.cardNumberField.frame = CGRectMake(frameX,
-                self.cardNumberField.frame.origin.y,
-                self.cardNumberField.frame.size.width,
-                self.cardNumberField.frame.size.height);
-    }                completion:nil];
+                                                self.cardNumberField.frame.origin.y,
+                                                self.cardNumberField.frame.size.width,
+                                                self.cardNumberField.frame.size.height);
+    }                completion: nil];
+    
+    self.cardExpiryField.frame = CGRectMake(self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing,
+                                            self.cardExpiryField.frame.origin.y,
+                                            self.cardExpiryField.frame.size.width,
+                                            self.cardExpiryField.frame.size.height);
+    
+    self.cardCVCField.frame = CGRectMake(self.cardExpiryField.frame.origin.x + self.cardExpiryField.frame.size.width + self.spacing,
+                                         self.cardCVCField.frame.origin.y,
+                                         self.cardCVCField.frame.size.width,
+                                         self.cardCVCField.frame.size.height);
 
     [self addSubview:self.placeholderView];
     [self.innerView addSubview:self.cardExpiryField];
     [self.innerView addSubview:self.cardCVCField];
     [self.cardExpiryField becomeFirstResponder];
+    
+    NSLog( @"stateMeta View layout:\n%@", [self viewStructure] );
 }
 
 - (void)stateCardCVC

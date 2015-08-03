@@ -79,6 +79,13 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     _isInitialState = YES;
     _isValidState = NO;
     
+    
+    if ( !self.font )
+    {
+        if ( [self.fontName length] && ( self.fontSize > 0.0 ) )
+            self.font = [UIFont fontWithName: self.fontName size: self.fontSize];
+    }
+    
     if ( !self.font )
         self.font = DefaultBoldFont;
     
@@ -93,6 +100,21 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     
     if ( self.zipWidth <= 0.0 )
         self.zipWidth = 70.0;
+    
+    if ( self.spacing <= 0.0 )
+        self.spacing = 2.0;
+    
+    if ( !self.textColor )
+        self.textColor = [UIColor blackColor];
+    
+    if ( !self.placeholderColor )
+        self.placeholderColor = DarkGreyColor;
+    
+    if ( !self.badColor )
+        self.badColor = RedColor;
+    
+    if ( !self.goodColor )
+        self.goodColor = self.textColor;
 
     if ( self.backgroundImage )
     {
@@ -134,7 +156,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
     [self stateCardNumber];
     
-    //[self setupFrameDebug];
+    [self setupFrameDebug];
 }
 
 
@@ -150,12 +172,12 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     [self.placeholderView.layer addSublayer:clip];
 }
 
-- (void) setFrameForOffset:(CGFloat)offset forField:(PTKTextField*)textField
+- (void) setFrameForSize:(CGFloat)width offset:(CGFloat)offset forField:(PTKTextField*)textField
 {
     CGRect iFrame = self.innerView.bounds;
-    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + offset;
+    CGFloat hoffset = self.placeholderView.frame.size.width + offset;
     
-    iFrame = CGRectMake( hoffset, 0, self.cardWidth,  self.bounds.size.height );
+    iFrame = CGRectMake( hoffset, 0, width,  self.bounds.size.height );
     
     [textField setFrame: iFrame];
 }
@@ -170,7 +192,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     self.cardNumberField.delegate = self;
     self.cardNumberField.placeholder = [self.class localizedStringWithKey:@"placeholder.card_number" defaultValue:@"1234 5678 9012 3456"];
     self.cardNumberField.keyboardType = UIKeyboardTypeNumberPad;
-    self.cardNumberField.textColor = DarkGreyColor;
+    self.cardNumberField.textColor = self.placeholderColor;
     self.cardNumberField.font = self.font;
 
     [self.cardNumberField.layer setMasksToBounds:YES];
@@ -186,7 +208,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     self.cardExpiryField.delegate = self;
     self.cardExpiryField.placeholder = [self.class localizedStringWithKey:@"placeholder.card_expiry" defaultValue:@"MM/YY"];
     self.cardExpiryField.keyboardType = UIKeyboardTypeNumberPad;
-    self.cardExpiryField.textColor = DarkGreyColor;
+    self.cardExpiryField.textColor = self.placeholderColor;
     self.cardExpiryField.font = self.font;
 
     [self.cardExpiryField.layer setMasksToBounds:YES];
@@ -202,7 +224,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     self.cardCVCField.delegate = self;
     self.cardCVCField.placeholder = [self.class localizedStringWithKey:@"placeholder.card_cvc" defaultValue:@"CVC"];
     self.cardCVCField.keyboardType = UIKeyboardTypeNumberPad;
-    self.cardCVCField.textColor = DarkGreyColor;
+    self.cardCVCField.textColor = self.placeholderColor;
     self.cardCVCField.font = self.font;
 
     [self.cardCVCField.layer setMasksToBounds:YES];
@@ -235,7 +257,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     
     [self.clipView setFrame: iframe];
     
-    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + placeHolderFrame.size.width + 10,
+    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + placeHolderFrame.size.width,
                          iframe.origin.y + self.edgeInsets.top,
                          iframe.size.width - (self.edgeInsets.left + self.edgeInsets.right+ placeHolderFrame.size.width + 10),
                         iframe.size.height - (self.edgeInsets.top + self.edgeInsets.bottom));
@@ -245,16 +267,16 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     
     [self.innerView setFrame: iframe];
     
-    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + 12, // note the orifinal had a 2 pixel overlap - so maintaining it
+    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + 2.0,
                         iframe.origin.y + self.edgeInsets.top + heightPadding,
                         placeHolderFrame.size.width,
                         placeHolderFrame.size.height );
     
     [self.placeholderView setFrame: iframe];
     
-    [self setFrameForOffset: 7.0 forField: self.cardNumberField];
-    [self setFrameForOffset: kPTKViewCardExpiryFieldStartX forField: self.cardExpiryField];
-    [self setFrameForOffset: kPTKViewCardCVCFieldStartX forField: self.cardCVCField];
+    [self setFrameForSize: self.cardWidth offset: self.spacing forField: self.cardNumberField];
+    [self setFrameForSize: self.expiryWidth offset: kPTKViewCardExpiryFieldStartX forField: self.cardExpiryField];
+    [self setFrameForSize: self.cvcWidth offset: kPTKViewCardCVCFieldStartX forField: self.cardCVCField];
 }
 
 // Checks both the old and new localization table (we switched in 3/14 to PaymentKit.strings).
@@ -624,16 +646,16 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
 - (void)textFieldIsValid:(UITextField *)textField
 {
-    textField.textColor = DarkGreyColor;
+    textField.textColor = self.goodColor;
     [self checkValid];
 }
 
 - (void)textFieldIsInvalid:(UITextField *)textField withErrors:(BOOL)errors
 {
     if (errors) {
-        textField.textColor = RedColor;
+        textField.textColor = self.badColor;
     } else {
-        textField.textColor = DarkGreyColor;
+        textField.textColor = self.textColor;
     }
 
     [self checkValid];

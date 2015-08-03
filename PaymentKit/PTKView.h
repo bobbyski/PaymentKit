@@ -33,11 +33,18 @@ IB_DESIGNABLE
 @property (nonatomic, readonly) PTKAddressZip *addressZip;
 @property (nonatomic, assign) IBInspectable UIEdgeInsets edgeInsets;
 @property (nonatomic, strong) IBInspectable UIFont* font;
+@property (nonatomic, strong) IBInspectable NSString* fontName;
+@property (nonatomic, assign) IBInspectable CGFloat fontSize;
 @property (nonatomic, strong) IBInspectable UIImage* backgroundImage;
 @property (nonatomic, assign) IBInspectable CGFloat cardWidth;
 @property (nonatomic, assign) IBInspectable CGFloat expiryWidth;
 @property (nonatomic, assign) IBInspectable CGFloat cvcWidth;
 @property (nonatomic, assign) IBInspectable CGFloat zipWidth;
+@property (nonatomic, assign) IBInspectable CGFloat spacing;
+@property (nonatomic, strong) IBInspectable UIColor* textColor;
+@property (nonatomic, strong) IBInspectable UIColor* placeholderColor;
+@property (nonatomic, strong) IBInspectable UIColor* goodColor;
+@property (nonatomic, strong) IBInspectable UIColor* badColor;
 
 @property IBOutlet UIView *innerView;
 @property IBOutlet UIView *clipView;

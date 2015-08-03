@@ -11,6 +11,7 @@
 @interface PaymentViewController()
 
 @property IBOutlet PTKView* paymentView;
+@property (weak, nonatomic) IBOutlet UIView *smallPaymentView;
 
 @end
 

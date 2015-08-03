@@ -8,6 +8,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PaymentViewController">
             <connections>
                 <outlet property="paymentView" destination="aXm-5D-SyK" id="Rgg-fl-5bJ"/>
+                <outlet property="smallPaymentView" destination="fnb-YN-078" id="v1j-m5-tW0"/>
                 <outlet property="view" destination="6" id="7"/>
             </connections>
         </placeholder>
@@ -22,15 +23,52 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="45" id="N8V-uS-1jg"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                            <color key="value" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="placeholderColor">
+                            <color key="value" red="1" green="0.43529412150000002" blue="0.81176471709999998" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="goodColor">
+                            <color key="value" red="0.52941176469999995" green="0.78823529410000004" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="badColor">
+                            <color key="value" red="0.74509803919999995" green="0.1176470588" blue="0.1764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="spacing">
+                            <real key="value" value="32"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="DBLCDTempBlack"/>
+                        <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                            <real key="value" value="16"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cardWidth">
+                            <real key="value" value="200"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="delegate" destination="-1" id="erz-Lu-wSE"/>
+                    </connections>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fnb-YN-078" customClass="PTKView">
+                    <rect key="frame" x="20" y="110" width="280" height="44"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="189-Da-2dN"/>
+                        <constraint firstAttribute="width" constant="280" id="lGx-9R-X0O"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="IpD-Qh-gJ1"/>
                     </connections>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.90196084980000002" green="0.90980398650000005" blue="0.9215686917" alpha="1" colorSpace="deviceRGB"/>
             <constraints>
+                <constraint firstItem="fnb-YN-078" firstAttribute="top" secondItem="aXm-5D-SyK" secondAttribute="bottom" constant="8" id="Cvj-Y2-Fzs"/>
                 <constraint firstAttribute="trailing" secondItem="aXm-5D-SyK" secondAttribute="trailing" id="J0r-vD-NSA"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="JvR-Z6-tbi"/>
+                <constraint firstAttribute="centerX" secondItem="fnb-YN-078" secondAttribute="centerX" id="XkO-5b-7bd"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="top" secondItem="6" secondAttribute="top" constant="57" id="mn0-OB-HWw"/>
             </constraints>
         </view>

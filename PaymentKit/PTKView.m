@@ -187,7 +187,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     CGRect iFrame = self.innerView.bounds;
     CGFloat hoffset = /* self.placeholderView.frame.size.width + */ offset;
     
-    iFrame = CGRectMake( hoffset, 0, width,  self.bounds.size.height );
+    iFrame = CGRectMake( hoffset, 0, width,  self.clipView.bounds.size.height );
     
     [textField setFrame: iFrame];
 }
@@ -286,10 +286,8 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
             innerX = innerX - ( contentWidth - windowWidth );
     }
     
-    iframe = CGRectMake( innerX,
-                         iframe.origin.y + self.edgeInsets.top,
-                         contentWidth, //iframe.size.width - (self.edgeInsets.left + self.edgeInsets.right+ placeHolderFrame.size.width + 10),
-                         iframe.size.height - (self.edgeInsets.top + self.edgeInsets.bottom));
+    //iframe = CGRectMake( innerX, iframe.origin.y, contentWidth, iframe.size.height);
+    iframe = CGRectMake( innerX, 0, contentWidth, clipFrame.size.height);
     
 //    NSLog( @"innerView before: %@ changing to %@", NSStringFromCGRect( [[self innerView] frame] ),
 //          NSStringFromCGRect( iframe ) );
@@ -297,7 +295,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     [self.innerView setFrame: iframe];
     
     iframe = CGRectMake( self.edgeInsets.left + 2.0,
-                         iframe.origin.y + self.edgeInsets.top + heightPadding,
+                         /* iframe.origin.y + self.edgeInsets.top +*/ heightPadding,
                          placeHolderFrame.size.width,
                          placeHolderFrame.size.height );
     

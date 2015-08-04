@@ -462,7 +462,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 {
     if (![self.placeholderView.image isEqual:image])
     {
-        __weak UIView *previousPlaceholderView = self.placeholderView22
+        __weak UIView *previousPlaceholderView = self.placeholderView;
         
         [UIView animateWithDuration:kPTKViewPlaceholderViewAnimationDuration delay:0
                             options:UIViewAnimationOptionCurveEaseInOut

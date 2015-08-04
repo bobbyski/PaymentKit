@@ -8,7 +8,7 @@
 
 #import "PTKView.h"
 #import "PTKTextField.h"
-#import "UIView+debuggingTools.h"
+//#import "UIView+debuggingTools.h"
 
 #define RGB(r,g,b) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:1.0f]
 #define DarkGreyColor RGB(0,0,0)
@@ -151,10 +151,11 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     self.clipView = [[UIView alloc] initWithFrame: UIEdgeInsetsInsetRect( [self bounds], [self edgeInsets])];
     [self.clipView setClipsToBounds: YES];
     [self.clipView setAutoresizingMask: UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-    [self.clipView setBackgroundColor: [UIColor cyanColor]];
+    [self.clipView setBackgroundColor: [UIColor clearColor]];
     [self addSubview: self.clipView];
 
     self.innerView = [[UIView alloc] initWithFrame:CGRectMake(40, 12, self.frame.size.width - 40, self.frame.size.height - 24.0)];
+    [self.innerView setBackgroundColor: [UIColor clearColor]];
     self.innerView.clipsToBounds = YES;
     
     [self resizeView];
@@ -311,8 +312,8 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                    offset: self.cardExpiryField.frame.origin.x + self.cardExpiryField.frame.size.width + self.spacing
                  forField: self.cardCVCField];
     
-    NSLog( @"State: %d, x: %f", (int) _state, innerX );
-    NSLog( @"resizeView View layout:\n%@", [self viewStructure] );
+//    NSLog( @"State: %d, x: %f", (int) _state, innerX );
+//    NSLog( @"resizeView View layout:\n%@", [self viewStructure] );
 }
 
 // Checks both the old and new localization table (we switched in 3/14 to PaymentKit.strings).
@@ -362,32 +363,20 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
         
         //CGRect pframe = [self.placeholderView frame];
 
-        [UIView animateWithDuration:0.05 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             self.opaqueOverGradientView.alpha = 0.0;
-                         } completion:^(BOOL finished) {
-        }];
+//        [UIView animateWithDuration:0.05 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
+//                         animations:^{
+//                             self.opaqueOverGradientView.alpha = 0.0;
+//                         }
+//                         completion:^(BOOL finished)
+//        {
+//        }];
+        
         [UIView animateWithDuration:0.400
                               delay:0
                             options:(UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction)
                          animations:^
                                 {
                                      [self resizeView];
-                                    
-//                                     self.cardNumberField.frame = CGRectMake( pframe.origin.x + pframe.size.width,
-//                                                                             self.cardNumberField.frame.origin.y,
-//                                                                             self.cardNumberField.frame.size.width,
-//                                                                             self.cardNumberField.frame.size.height);
-//                                     
-//                                     self.cardExpiryField.frame = CGRectMake(self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing,
-//                                                                             self.cardExpiryField.frame.origin.y,
-//                                                                             self.cardExpiryField.frame.size.width,
-//                                                                             self.cardExpiryField.frame.size.height);
-//                                     
-//                                     self.cardCVCField.frame = CGRectMake(self.cardExpiryField.frame.origin.x + self.cardExpiryField.frame.size.width + self.spacing,
-//                                                                          self.cardCVCField.frame.origin.y,
-//                                                                          self.cardCVCField.frame.size.width,
-//                                                                          self.cardCVCField.frame.size.height);
                                  }
                          completion:^(BOOL completed)
                                  {
@@ -423,21 +412,12 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     cardNumberSize = [self.cardNumber.formattedString sizeWithAttributes:attributes];
     lastGroupSize = [self.cardNumber.lastGroup sizeWithAttributes:attributes];
 #endif
-
-    CGFloat frameX = self.cardNumberField.frame.origin.x - (cardNumberSize.width - lastGroupSize.width);
-
-    [UIView animateWithDuration:0.05 delay:0.35 options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         self.opaqueOverGradientView.alpha = 1.0;
-                     } completion:^(BOOL finished) {
-    }];
-    [UIView animateWithDuration:0.400 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        
-        self.cardNumberField.frame = CGRectMake(frameX,
-                                                self.cardNumberField.frame.origin.y,
-                                                self.cardNumberField.frame.size.width,
-                                                self.cardNumberField.frame.size.height);
-    }                completion: nil];
+    
+    [UIView animateWithDuration:0.400 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+                            {
+                                [self resizeView];
+                            }
+                     completion: nil];
     
     self.cardExpiryField.frame = CGRectMake(self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing,
                                             self.cardExpiryField.frame.origin.y,
@@ -482,8 +462,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 {
     if (![self.placeholderView.image isEqual:image])
     {
-        __weak UIView *previousPlaceholderView = self.placeholderView;
-        __weak PTKView* me = self;
+        __weak UIView *previousPlaceholderView = self.placeholderView22
         
         [UIView animateWithDuration:kPTKViewPlaceholderViewAnimationDuration delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
@@ -494,10 +473,6 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                                  }
                          completion:^(BOOL finished)
                                 {
-                                    NSLog( @"Replaced graphic at %@ with one at %@",
-                                          NSStringFromCGRect( [previousPlaceholderView frame]),
-                                          NSStringFromCGRect( [me.placeholderView frame] ) );
-                                    
                                     [previousPlaceholderView removeFromSuperview];
                                 }];
         
@@ -518,7 +493,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                                  }
                          completion:^(BOOL finished)
                                 {
-                                    NSLog( @"New graphic at %@", NSStringFromCGRect( [me.placeholderView frame]) );
+                                    //NSLog( @"New graphic at %@", NSStringFromCGRect( [me.placeholderView frame]) );
                                 }];
     }
 }

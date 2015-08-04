@@ -40,6 +40,9 @@
                         <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                             <real key="value" value="16"/>
                         </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="spacing">
+                            <real key="value" value="75"/>
+                        </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="delegate" destination="-1" id="erz-Lu-wSE"/>
@@ -52,6 +55,11 @@
                         <constraint firstAttribute="height" constant="44" id="189-Da-2dN"/>
                         <constraint firstAttribute="width" constant="280" id="lGx-9R-X0O"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="spacing">
+                            <real key="value" value="36"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="delegate" destination="-1" id="IpD-Qh-gJ1"/>
                     </connections>
@@ -65,6 +73,7 @@
                 <constraint firstAttribute="centerX" secondItem="fnb-YN-078" secondAttribute="centerX" id="XkO-5b-7bd"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="top" secondItem="6" secondAttribute="top" constant="57" id="mn0-OB-HWw"/>
             </constraints>
+            <point key="canvasLocation" x="-189" y="207"/>
         </view>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

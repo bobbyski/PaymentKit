@@ -10,6 +10,8 @@
 
 @interface UIView (debuggingTools)
 
+- (NSString*) viewLabel;
+
 - (NSString*)viewStructure;
 
 @end

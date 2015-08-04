@@ -10,6 +10,26 @@
 
 @implementation UIView (debuggingTools)
 
+
+- (NSString*) viewLabel
+{
+    NSString* result = nil;
+    
+    if ( [self isKindOfClass: [UITextField class]] )
+        result = [(UITextField*)self text];
+    else if ( [self isKindOfClass: [UITextView class]] )
+        result = [(UITextView*)self text];
+    else if ( [self isKindOfClass: [UILabel class]] )
+        result = [(UILabel*)self text];
+    else
+        result = @"";
+    
+    if ( [result length] > 50 )
+        result = [result substringToIndex: 50];
+    
+    return result;
+}
+
 - (NSString*)viewStructure
 {
     return [self viewStructureWithPrefix: @"  " andSeperator: @"\n"];
@@ -22,7 +42,7 @@
     
     if ( ![className isEqualToString: @"UIFieldEditor"] )
     {
-        [result appendFormat: @"%@%@ %@", prefix, className, NSStringFromCGRect( [self frame])];
+        [result appendFormat: @"%@%@ %@ %@", prefix, className, NSStringFromCGRect( [self frame]), [self viewLabel]];
         
         // get text here?
         

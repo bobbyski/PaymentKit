@@ -27,6 +27,8 @@
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
+    
+    [self.paymentView setEdgeInsets: UIEdgeInsetsMake( 5, 15, 5,  15 )];
 
     self.title = @"Change Card";
     

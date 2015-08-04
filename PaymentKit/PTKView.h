@@ -47,12 +47,6 @@ IB_DESIGNABLE
 @property (nonatomic, strong) IBInspectable UIColor* goodColor;
 @property (nonatomic, strong) IBInspectable UIColor* badColor;
 
-@property IBOutlet UIView *innerView;
-@property IBOutlet UIView *clipView;
-@property IBOutlet PTKTextField *cardNumberField;
-@property IBOutlet PTKTextField *cardExpiryField;
-@property IBOutlet PTKTextField *cardCVCField;
-@property IBOutlet UIImageView *placeholderView;
 @property (nonatomic, weak) IBOutlet id <PTKViewDelegate> delegate;
 @property (readonly) PTKCard *card;
 

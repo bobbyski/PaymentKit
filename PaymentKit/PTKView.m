@@ -31,9 +31,21 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     NSInteger _state;
 }
 
+@property IBOutlet UIView *innerView;
+@property IBOutlet UIView *clipView;
+@property IBOutlet PTKTextField *cardNumberField;
+@property IBOutlet PTKTextField *cardExpiryField;
+@property IBOutlet PTKTextField *cardCVCField;
+@property IBOutlet UIImageView *placeholderView;
+
 @property (nonatomic, readonly, assign) UIResponder *firstResponderField;
 @property (nonatomic, readonly, assign) PTKTextField *firstInvalidField;
 @property (nonatomic, readonly, assign) PTKTextField *nextFirstResponder;
+
+@property (nonatomic) PTKCardNumber *cardNumber;
+@property (nonatomic) PTKCardExpiry *cardExpiry;
+@property (nonatomic) PTKCardCVC *cardCVC;
+@property (nonatomic) PTKAddressZip *addressZip;
 
 - (void)setup;
 - (void)setupPlaceholderView;
@@ -48,11 +60,6 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 - (BOOL)cardExpiryShouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)replacementString;
 - (BOOL)cardCVCShouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)replacementString;
 
-@property (nonatomic) UIView *opaqueOverGradientView;
-@property (nonatomic) PTKCardNumber *cardNumber;
-@property (nonatomic) PTKCardExpiry *cardExpiry;
-@property (nonatomic) PTKCardCVC *cardCVC;
-@property (nonatomic) PTKAddressZip *addressZip;
 @end
 
 #pragma mark -
@@ -140,6 +147,12 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
             [self addSubview:backgroundImageView];
         }
     }
+    
+    self.clipView = [[UIView alloc] initWithFrame: UIEdgeInsetsInsetRect( [self bounds], [self edgeInsets])];
+    [self.clipView setClipsToBounds: YES];
+    [self.clipView setAutoresizingMask: UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    [self.clipView setBackgroundColor: [UIColor cyanColor]];
+    [self addSubview: self.clipView];
 
     self.innerView = [[UIView alloc] initWithFrame:CGRectMake(40, 12, self.frame.size.width - 40, self.frame.size.height - 24.0)];
     self.innerView.clipsToBounds = YES;
@@ -153,18 +166,8 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
     [self.innerView addSubview:self.cardNumberField];
 
-    UIImageView *gradientImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 12, 34)];
-    gradientImageView.image = [UIImage imageNamed:@"gradient"];
-    [self.innerView addSubview:gradientImageView];
-
-    self.opaqueOverGradientView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 18, self.innerView.frame.size.height)];
-    self.opaqueOverGradientView.backgroundColor = [UIColor colorWithRed:0.9686 green:0.9686
-                                                                   blue:0.9686 alpha:1.0000];
-    self.opaqueOverGradientView.alpha = 0.0;
-    [self.innerView addSubview:self.opaqueOverGradientView];
-
-    [self addSubview:self.innerView];
-    [self addSubview:self.placeholderView];
+    [self.clipView addSubview: self.innerView];
+    [self addSubview: self.placeholderView];
 
     [self stateCardNumber];
     
@@ -177,11 +180,6 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     self.placeholderView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 13, 32, 20)];
     self.placeholderView.backgroundColor = [UIColor clearColor];
     self.placeholderView.image = [UIImage imageNamed:@"placeholder"];
-
-    CALayer *clip = [CALayer layer];
-    clip.frame = CGRectMake(32, 0, 4, 20);
-    clip.backgroundColor = [UIColor clearColor].CGColor;
-    [self.placeholderView.layer addSublayer:clip];
 }
 
 - (void) setFrameForSize:(CGFloat)width offset:(CGFloat)offset forField:(PTKTextField*)textField
@@ -197,7 +195,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 - (void)setupCardNumberField
 {
     CGRect iFrame = self.innerView.bounds;
-    CGFloat hoffset = self.placeholderView.frame.origin.x + self.placeholderView.frame.size.width + 2.0;
+    CGFloat hoffset = self.placeholderView.frame.size.width + 2.0;
     
     iFrame = CGRectMake( hoffset, 0, self.cardWidth,  self.bounds.size.height );
     self.cardNumberField = [[PTKTextField alloc] initWithFrame: iFrame];
@@ -263,27 +261,29 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
 - (void) resizeView
 {
-    CGFloat contentWidth = self.placeholderView.frame.size.width
-                        + self.placeHolderSpacing
+    CGFloat contentWidth = /* self.placeholderView.frame.size.width
+                        + self.placeHolderSpacing */
                         + self.cardNumberField.frame.size.width
                         + self.cardExpiryField.frame.size.width
                         + self.cardCVCField.frame.size.width
                         + ( self.spacing * 2 );
     
     CGRect iframe = [self bounds];
-    CGFloat windowWidth = iframe.size.width - ( self.edgeInsets.left + self.edgeInsets.right );
     CGRect placeHolderFrame = [[self placeholderView] frame];
     CGFloat heightPadding = ( iframe.size.height - placeHolderFrame.size.height ) / 2.0;
     
-    [self.clipView setFrame: iframe];
+    CGRect clipFrame = UIEdgeInsetsInsetRect( [self bounds], [self edgeInsets]);
+    clipFrame.size.width -= ( self.placeholderView.frame.size.width + self.placeHolderSpacing);
+    clipFrame.origin.x += ( self.placeholderView.frame.size.width + self.placeHolderSpacing );
     
-    CGFloat innerX = self.edgeInsets.left + placeHolderFrame.size.width;
+    CGFloat windowWidth = clipFrame.size.width;
+    [self.clipView setFrame: clipFrame];
+    
+    CGFloat innerX = 0.0; //self.edgeInsets.left + placeHolderFrame.size.width;
     if ( contentWidth > windowWidth )
     {
         if ( _state != kPTKStateCardNumber )
-            innerX = innerX - ( ( contentWidth - windowWidth )
-                               + self.placeholderView.frame.size.width + self.edgeInsets.left
-                               + self.placeHolderSpacing );
+            innerX = innerX - ( contentWidth - windowWidth );
     }
     
     iframe = CGRectMake( innerX,
@@ -296,14 +296,14 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     
     [self.innerView setFrame: iframe];
     
-    iframe = CGRectMake( iframe.origin.x + self.edgeInsets.left + 2.0,
-                        iframe.origin.y + self.edgeInsets.top + heightPadding,
-                        placeHolderFrame.size.width,
-                        placeHolderFrame.size.height );
+    iframe = CGRectMake( self.edgeInsets.left + 2.0,
+                         iframe.origin.y + self.edgeInsets.top + heightPadding,
+                         placeHolderFrame.size.width,
+                         placeHolderFrame.size.height );
     
     [self.placeholderView setFrame: iframe];
     
-    [self setFrameForSize: self.cardWidth offset: self.placeholderView.frame.size.width + self.placeHolderSpacing forField: self.cardNumberField];
+    [self setFrameForSize: self.cardWidth offset: 5.0 forField: self.cardNumberField];
     
     [self setFrameForSize: self.expiryWidth
                    offset: self.cardNumberField.frame.origin.x + self.cardNumberField.frame.size.width + self.spacing
@@ -314,7 +314,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                  forField: self.cardCVCField];
     
     NSLog( @"State: %d, x: %f", (int) _state, innerX );
-    //NSLog( @"resizeView View layout:\n%@", [self viewStructure] );
+    NSLog( @"resizeView View layout:\n%@", [self viewStructure] );
 }
 
 // Checks both the old and new localization table (we switched in 3/14 to PaymentKit.strings).
@@ -451,7 +451,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                                          self.cardCVCField.frame.size.width,
                                          self.cardCVCField.frame.size.height);
 
-    [self addSubview:self.placeholderView];
+    [self addSubview: self.placeholderView];
     [self.innerView addSubview:self.cardExpiryField];
     [self.innerView addSubview:self.cardCVCField];
     [self.cardExpiryField becomeFirstResponder];
@@ -482,30 +482,46 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
 - (void)setPlaceholderViewImage:(UIImage *)image
 {
-    if (![self.placeholderView.image isEqual:image]) {
-        __block __unsafe_unretained UIView *previousPlaceholderView = self.placeholderView;
+    if (![self.placeholderView.image isEqual:image])
+    {
+        __weak UIView *previousPlaceholderView = self.placeholderView;
+        __weak PTKView* me = self;
+        
         [UIView animateWithDuration:kPTKViewPlaceholderViewAnimationDuration delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             self.placeholderView.layer.opacity = 0.0;
-                             self.placeholderView.layer.transform = CATransform3DMakeScale(1.2, 1.2, 1.2);
-                         } completion:^(BOOL finished) {
-            [previousPlaceholderView removeFromSuperview];
-        }];
+                         animations:^
+                                 {
+                                     self.placeholderView.layer.opacity = 0.0;
+                                     self.placeholderView.layer.transform = CATransform3DMakeScale(1.2, 1.2, 1.2);
+                                 }
+                         completion:^(BOOL finished)
+                                {
+                                    NSLog( @"Replaced graphic at %@ with one at %@",
+                                          NSStringFromCGRect( [previousPlaceholderView frame]),
+                                          NSStringFromCGRect( [me.placeholderView frame] ) );
+                                    
+                                    [previousPlaceholderView removeFromSuperview];
+                                }];
+        
         self.placeholderView = nil;
 
         [self setupPlaceholderView];
         self.placeholderView.image = image;
         self.placeholderView.layer.opacity = 0.0;
         self.placeholderView.layer.transform = CATransform3DMakeScale(0.8, 0.8, 0.8);
-        [self insertSubview:self.placeholderView belowSubview:previousPlaceholderView];
+        [self insertSubview: self.placeholderView belowSubview: previousPlaceholderView];
+        
         [UIView animateWithDuration:kPTKViewPlaceholderViewAnimationDuration delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             self.placeholderView.layer.opacity = 1.0;
-                             self.placeholderView.layer.transform = CATransform3DIdentity;
-                         } completion:^(BOOL finished) {
-        }];
+                         animations:^
+                                 {
+                                     self.placeholderView.layer.opacity = 1.0;
+                                     self.placeholderView.layer.transform = CATransform3DIdentity;
+                                 }
+                         completion:^(BOOL finished)
+                                {
+                                    NSLog( @"New graphic at %@", NSStringFromCGRect( [me.placeholderView frame]) );
+                                }];
     }
 }
 

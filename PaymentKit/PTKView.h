@@ -50,4 +50,8 @@ IB_DESIGNABLE
 @property (nonatomic, weak) IBOutlet id <PTKViewDelegate> delegate;
 @property (readonly) PTKCard *card;
 
+#pragma mark - protected methods -
+- (void) resizeView;
+
+
 @end

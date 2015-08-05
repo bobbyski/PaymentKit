@@ -15,6 +15,7 @@
 @property (nonatomic, copy) NSString *addressZip;
 @property (nonatomic, assign) NSUInteger expMonth;
 @property (nonatomic, assign) NSUInteger expYear;
+@property (nonatomic, copy) NSString* type;
 
 @property (nonatomic, readonly) NSString *last4;
 

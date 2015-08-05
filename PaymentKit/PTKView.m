@@ -454,6 +454,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     card.cvc = [self.cardCVC string];
     card.expMonth = [self.cardExpiry month];
     card.expYear = [self.cardExpiry year];
+    card.type = [self cardTupe];
 
     return card;
 }
@@ -540,6 +541,39 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     }
 
     [self setPlaceholderViewImage:[UIImage imageNamed:cardTypeName]];
+}
+
+- (NSString*)cardTupe
+{
+    PTKCardNumber *cardNumber = [PTKCardNumber cardNumberWithString:self.cardNumberField.text];
+    PTKCardType cardType = [cardNumber cardType];
+    NSString *cardTypeName = @"unknown";
+    
+    switch (cardType)
+    {
+        case PTKCardTypeAmex:
+            cardTypeName = @"American Express";
+            break;
+        case PTKCardTypeDinersClub:
+            cardTypeName = @"Diners Club";
+            break;
+        case PTKCardTypeDiscover:
+            cardTypeName = @"Discover";
+            break;
+        case PTKCardTypeJCB:
+            cardTypeName = @"JCB";
+            break;
+        case PTKCardTypeMasterCard:
+            cardTypeName = @"MasterCard";
+            break;
+        case PTKCardTypeVisa:
+            cardTypeName = @"Visa";
+            break;
+        default:
+            break;
+    }
+    
+    return cardTypeName;
 }
 
 #pragma mark - Delegates
@@ -707,7 +741,17 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 #pragma mark UIResponder
 - (UIResponder *)firstResponderField;
 {
-    NSArray *responders = @[self.cardNumberField, self.cardExpiryField, self.cardCVCField];
+    NSMutableArray* responders = [NSMutableArray arrayWithCapacity: 3];
+    
+    if ( self.cardNumberField )
+        [responders addObject: self.cardNumberField];
+    
+    if ( self.cardExpiryField )
+        [responders addObject: self.cardExpiryField];
+    
+    if ( self.cardCVCField )
+        [responders addObject: self.cardCVCField];
+    
     for (UIResponder *responder in responders) {
         if (responder.isFirstResponder) {
             return responder;

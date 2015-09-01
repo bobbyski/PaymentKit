@@ -3,8 +3,9 @@ Pod::Spec.new do |s|
   s.version               = "1.1.3"
   s.summary               = "Utility library for creating credit card payment forms."
   s.license               = { :type => 'MIT', :file => 'LICENSE' }
-  s.homepage              = "https://stripe.com"
-  s.author                = { "Alex MacCaw" => "alex@stripe.com" }
+  s.homepage              = "https://github.com/bobbyski/PaymentKit"
+  s.author                = { "Alex MacCaw" => "alex@stripe.com",
+                 			  "Bobby Skinner"     => "bobbyski@gmail.com" }
   s.source                = { :git => "https://github.com/bobbyski/PaymentKit.git", :tag => "v1.1.3"}
   s.source_files          = 'PaymentKit/*.{h,m}'
   s.public_header_files   = 'PaymentKit/*.h'

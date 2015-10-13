@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PaymentViewController">
@@ -64,21 +64,26 @@
                         <outlet property="delegate" destination="-1" id="IpD-Qh-gJ1"/>
                     </connections>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ba9-E3-eQH">
+                    <rect key="frame" x="20" y="162" width="280" height="30"/>
+                    <state key="normal" title="Set Card Values"/>
+                    <connections>
+                        <action selector="setCardValues:" destination="-1" eventType="touchUpInside" id="FsI-tI-ArQ"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.90196084980000002" green="0.90980398650000005" blue="0.9215686917" alpha="1" colorSpace="deviceRGB"/>
             <constraints>
+                <constraint firstItem="ba9-E3-eQH" firstAttribute="width" secondItem="fnb-YN-078" secondAttribute="width" id="8Ih-nq-GzP"/>
                 <constraint firstItem="fnb-YN-078" firstAttribute="top" secondItem="aXm-5D-SyK" secondAttribute="bottom" constant="8" id="Cvj-Y2-Fzs"/>
                 <constraint firstAttribute="trailing" secondItem="aXm-5D-SyK" secondAttribute="trailing" id="J0r-vD-NSA"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="JvR-Z6-tbi"/>
                 <constraint firstAttribute="centerX" secondItem="fnb-YN-078" secondAttribute="centerX" id="XkO-5b-7bd"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="top" secondItem="6" secondAttribute="top" constant="57" id="mn0-OB-HWw"/>
+                <constraint firstItem="ba9-E3-eQH" firstAttribute="top" secondItem="fnb-YN-078" secondAttribute="bottom" constant="8" id="ngR-O1-Tg4"/>
+                <constraint firstItem="ba9-E3-eQH" firstAttribute="centerX" secondItem="fnb-YN-078" secondAttribute="centerX" id="z7f-dh-YuS"/>
             </constraints>
             <point key="canvasLocation" x="-189" y="207"/>
         </view>
     </objects>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

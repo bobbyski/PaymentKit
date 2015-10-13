@@ -454,9 +454,30 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     card.cvc = [self.cardCVC string];
     card.expMonth = [self.cardExpiry month];
     card.expYear = [self.cardExpiry year];
-    card.type = [self cardTupe];
+    card.type = [self cardType];
 
     return card;
+}
+
+- (void) setCard:(PTKCard *)card
+{
+    if ( card.number ) {
+        PTKCardNumber* cardNumber = [PTKCardNumber cardNumberWithString:card.number];
+        [self cardNumberFieldShouldChangeCharactersInRange:NSMakeRange(0, [self.cardNumberField.text length])
+                                         replacementString:cardNumber.formattedString];
+    }
+    
+    if ( card.expMonth > 0 && card.expYear > 0 ) {
+        PTKCardExpiry* cardExpiry = [PTKCardExpiry cardExpiryWithString:[NSString stringWithFormat:@"%d/%d", card.expMonth, card.expYear ]];
+        [self cardExpiryShouldChangeCharactersInRange:NSMakeRange(0, [self.cardExpiryField.text length])
+                                    replacementString:cardExpiry.formattedString];
+    }
+    
+    if ( card.cvc ) {
+        PTKCardCVC* cardCVC = [PTKCardCVC cardCVCWithString:card.cvc];
+        [self cardCVCShouldChangeCharactersInRange:NSMakeRange(0, [self.cardCVCField.text length])
+                                 replacementString:cardCVC.formattedString];
+    }
 }
 
 - (void)setPlaceholderViewImage:(UIImage *)image
@@ -543,7 +564,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     [self setPlaceholderViewImage:[UIImage imageNamed:cardTypeName]];
 }
 
-- (NSString*)cardTupe
+- (NSString*)cardType
 {
     PTKCardNumber *cardNumber = [PTKCardNumber cardNumberWithString:self.cardNumberField.text];
     PTKCardType cardType = [cardNumber cardType];

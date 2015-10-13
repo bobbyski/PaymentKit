@@ -48,7 +48,7 @@ IB_DESIGNABLE
 @property (nonatomic, strong) IBInspectable UIColor* badColor;
 
 @property (nonatomic, weak) IBOutlet id <PTKViewDelegate> delegate;
-@property (readonly) PTKCard *card;
+@property (nonatomic, strong) PTKCard *card;
 
 #pragma mark - protected methods -
 - (void) resizeView;

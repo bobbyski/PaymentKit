@@ -11,7 +11,7 @@
 @interface PaymentViewController()
 
 @property IBOutlet PTKView* paymentView;
-@property (weak, nonatomic) IBOutlet UIView *smallPaymentView;
+@property (weak, nonatomic) IBOutlet PTKView *smallPaymentView;
 
 @end
 
@@ -61,6 +61,18 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     [self.navigationController popViewControllerAnimated: YES];
+}
+
+- (IBAction)setCardValues:(id)sender {
+    PTKCard* card = [PTKCard new];
+    
+    card.number = @"4242424242424242";
+    card.expMonth = 12;
+    card.expYear = 52;
+    card.cvc = @"123";
+    
+    self.paymentView.card = card;
+    self.smallPaymentView.card = card;
 }
 
 @end

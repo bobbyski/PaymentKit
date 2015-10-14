@@ -66,9 +66,16 @@
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ba9-E3-eQH">
                     <rect key="frame" x="20" y="162" width="280" height="30"/>
-                    <state key="normal" title="Set Card Values"/>
+                    <state key="normal" title="Set Visa"/>
                     <connections>
-                        <action selector="setCardValues:" destination="-1" eventType="touchUpInside" id="FsI-tI-ArQ"/>
+                        <action selector="setVisa:" destination="-1" eventType="touchUpInside" id="cE0-dw-Mky"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mp4-wC-rYO">
+                    <rect key="frame" x="20" y="200" width="280" height="30"/>
+                    <state key="normal" title="Set American Express"/>
+                    <connections>
+                        <action selector="setAmericanExpress:" destination="-1" eventType="touchUpInside" id="OAB-No-Cza"/>
                     </connections>
                 </button>
             </subviews>
@@ -78,7 +85,10 @@
                 <constraint firstItem="fnb-YN-078" firstAttribute="top" secondItem="aXm-5D-SyK" secondAttribute="bottom" constant="8" id="Cvj-Y2-Fzs"/>
                 <constraint firstAttribute="trailing" secondItem="aXm-5D-SyK" secondAttribute="trailing" id="J0r-vD-NSA"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="JvR-Z6-tbi"/>
+                <constraint firstItem="Mp4-wC-rYO" firstAttribute="centerX" secondItem="ba9-E3-eQH" secondAttribute="centerX" id="UKm-P4-SiC"/>
                 <constraint firstAttribute="centerX" secondItem="fnb-YN-078" secondAttribute="centerX" id="XkO-5b-7bd"/>
+                <constraint firstItem="Mp4-wC-rYO" firstAttribute="top" secondItem="ba9-E3-eQH" secondAttribute="bottom" constant="8" id="dqf-kO-End"/>
+                <constraint firstItem="Mp4-wC-rYO" firstAttribute="width" secondItem="ba9-E3-eQH" secondAttribute="width" id="elh-0g-9vR"/>
                 <constraint firstItem="aXm-5D-SyK" firstAttribute="top" secondItem="6" secondAttribute="top" constant="57" id="mn0-OB-HWw"/>
                 <constraint firstItem="ba9-E3-eQH" firstAttribute="top" secondItem="fnb-YN-078" secondAttribute="bottom" constant="8" id="ngR-O1-Tg4"/>
                 <constraint firstItem="ba9-E3-eQH" firstAttribute="centerX" secondItem="fnb-YN-078" secondAttribute="centerX" id="z7f-dh-YuS"/>

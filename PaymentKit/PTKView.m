@@ -468,7 +468,16 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     }
     
     if ( card.expMonth > 0 && card.expYear > 0 ) {
-        PTKCardExpiry* cardExpiry = [PTKCardExpiry cardExpiryWithString:[NSString stringWithFormat:@"%d/%d", card.expMonth, card.expYear ]];
+        
+        NSString* prefix = @"";
+        if ( card.expMonth < 10 )
+            prefix = @"0";
+        NSString* monthString = [NSString stringWithFormat:@"%@%lu", prefix, (unsigned long)card.expMonth];
+        
+        NSUInteger trimmedYear = card.expYear % 100;
+        NSString* yearString = [NSString stringWithFormat:@"%lu", (unsigned long)trimmedYear];
+        
+        PTKCardExpiry* cardExpiry = [PTKCardExpiry cardExpiryWithString:[NSString stringWithFormat:@"%@/%@", monthString, yearString ]];
         [self cardExpiryShouldChangeCharactersInRange:NSMakeRange(0, [self.cardExpiryField.text length])
                                     replacementString:cardExpiry.formattedString];
     }

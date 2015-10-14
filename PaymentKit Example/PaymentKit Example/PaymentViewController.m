@@ -63,13 +63,25 @@
     [self.navigationController popViewControllerAnimated: YES];
 }
 
-- (IBAction)setCardValues:(id)sender {
+- (IBAction)setVisa:(id)sender {
     PTKCard* card = [PTKCard new];
     
     card.number = @"4242424242424242";
+    card.expMonth = 1;
+    card.expYear = 2052;
+    card.cvc = @"123";
+    
+    self.paymentView.card = card;
+    self.smallPaymentView.card = card;
+}
+
+- (IBAction)setAmericanExpress:(id)sender {
+    PTKCard* card = [PTKCard new];
+    
+    card.number = @"378282246310005";
     card.expMonth = 12;
     card.expYear = 52;
-    card.cvc = @"123";
+    card.cvc = @"1234";
     
     self.paymentView.card = card;
     self.smallPaymentView.card = card;

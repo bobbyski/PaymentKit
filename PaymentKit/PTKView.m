@@ -610,7 +610,9 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if ([textField isEqual:self.cardCVCField]) {
+    NSString* trimmedString = [textField.text  stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
+    
+    if ([textField isEqual:self.cardCVCField] && 0 == [trimmedString length]) {
         [self setPlaceholderToCVC];
     } else {
         [self setPlaceholderToCardType];
@@ -720,6 +722,9 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     // Strip non-digits
     self.cardCVCField.text = [cardCVC string];
 
+    if ( [self.cardCVCField.text length] > 0 )
+        [self setPlaceholderToCardType];
+    
     if ([cardCVC isValidWithType:cardType]) {
         [self textFieldIsValid:self.cardCVCField];
     } else {

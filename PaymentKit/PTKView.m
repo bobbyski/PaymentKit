@@ -98,7 +98,9 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     
     if ( self.cardWidth <= 0.0 )
     {
-        CGSize size = [@"9999 9999 9999 9999" sizeWithAttributes: @{NSFontAttributeName: self.font}];
+        // Added this extra character to the end because, when the text field is being edited, it leaves a space after the cursor
+        // Which shifts everything left and clips the first character
+        CGSize size = [@"9999 9999 9999 9999X" sizeWithAttributes: @{NSFontAttributeName: self.font}];
         self.cardWidth = size.width;
     }
     

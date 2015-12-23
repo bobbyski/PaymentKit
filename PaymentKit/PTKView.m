@@ -382,8 +382,8 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                                  }
                          completion:^(BOOL completed)
                                  {
-                                     [self.cardExpiryField removeFromSuperview];
-                                     [self.cardCVCField removeFromSuperview];
+                                     //[self.cardExpiryField removeFromSuperview];
+                                     //[self.cardCVCField removeFromSuperview];
                                  }];
         
         [self.cardNumberField becomeFirstResponder];
@@ -506,7 +506,7 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
                                  }
                          completion:^(BOOL finished)
                                 {
-                                    [previousPlaceholderView removeFromSuperview];
+                                    //[previousPlaceholderView removeFromSuperview];
                                 }];
         
         self.placeholderView = nil;
@@ -644,10 +644,12 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
 
 - (void)pkTextFieldDidBackSpaceWhileTextIsEmpty:(PTKTextField *)textField
 {
-    if (textField == self.cardCVCField)
-        [self.cardExpiryField becomeFirstResponder];
-    else if (textField == self.cardExpiryField)
-        [self stateCardNumber];
+// THIS HAS BEEN REMOVED:
+// Replaced by code in the ShouldChangeCharactersInRange handlers
+//    if (textField == self.cardCVCField)
+//        [self.cardExpiryField becomeFirstResponder];
+//    else if (textField == self.cardExpiryField)
+//        [self stateCardNumber];
 }
 
 - (BOOL)cardNumberFieldShouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)replacementString
@@ -687,6 +689,21 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     resultString = [PTKTextField textByRemovingUselessSpacesFromString:resultString];
     PTKCardExpiry *cardExpiry = [PTKCardExpiry cardExpiryWithString:resultString];
 
+    // This code allows the user to backspace from one field into the previous one
+    NSString* strippedPreviousValue = [PTKTextField textByRemovingUselessSpacesFromString:self.cardExpiryField.text];
+//    NSLog(@"EXPIRY: StrippedPrevVal: %@(%lu)     New: %@(%lu)     Replace: %@(%lu)      Range: %lu %lu",
+//          strippedPreviousValue, (unsigned long)[strippedPreviousValue length],
+//          resultString, (unsigned long)[resultString length],
+//          replacementString, (unsigned long)[replacementString length],
+//          (unsigned long)range.location, (unsigned long)range.length);
+    if ( 0 == [strippedPreviousValue length] && 0 == [replacementString length] && 0 == [resultString length] ) {
+        [self stateCardNumber];
+        [self.cardNumberField becomeFirstResponder];
+        NSRange newRange = NSMakeRange([self.cardNumberField.text length]-1, 1);
+        [self cardNumberFieldShouldChangeCharactersInRange:newRange replacementString:replacementString];
+        return NO;
+    }
+    
     if (![cardExpiry isPartiallyValid]) return NO;
 
     // Only support shorthand year
@@ -718,6 +735,20 @@ static NSString *const kPTKOldLocalizedStringsTableName = @"STPaymentLocalizable
     PTKCardCVC *cardCVC = [PTKCardCVC cardCVCWithString:resultString];
     PTKCardType cardType = [[PTKCardNumber cardNumberWithString:self.cardNumberField.text] cardType];
 
+    // This code allows the user to backspace from one field into the previous one
+    NSString* strippedPreviousValue = [PTKTextField textByRemovingUselessSpacesFromString:self.cardCVCField.text];
+//    NSLog(@"CVC: StrippedPrevVal: %@(%lu)     New: %@(%lu)     Replace: %@(%lu)      Range: %lu %lu",
+//          strippedPreviousValue, (unsigned long)[strippedPreviousValue length],
+//          resultString, (unsigned long)[resultString length],
+//          replacementString, (unsigned long)[replacementString length],
+//          (unsigned long)range.location, (unsigned long)range.length);
+    if ( 0 == [strippedPreviousValue length] && 0 == [replacementString length] && 0 == [resultString length] ) {
+        [self.cardExpiryField becomeFirstResponder];
+        NSRange newRange = NSMakeRange([self.cardExpiryField.text length]-1, 1);
+        [self cardExpiryShouldChangeCharactersInRange:newRange replacementString:replacementString];
+        return NO;
+    }
+    
     // Restrict length
     if (![cardCVC isPartiallyValidWithType:cardType]) return NO;
 
